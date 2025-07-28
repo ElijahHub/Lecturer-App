@@ -5,7 +5,7 @@
     "slug": "Lecturer_App",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/afit_icon.png",
     "scheme": "lecturerapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -43,7 +43,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "0f0d5533-4250-41e6-bf0d-64ba55aebb79"
+        "projectId": "f785a2a6-00fa-49ba-ae46-ebc436c029fe"
       }
     },
     "owner": "elijahhub",
@@ -51,7 +51,7 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/0f0d5533-4250-41e6-bf0d-64ba55aebb79"
+      "url": "https://u.expo.dev/f785a2a6-00fa-49ba-ae46-ebc436c029fe"
     }
   }
 }
