@@ -5,7 +5,7 @@
     "slug": "Lecturer_App",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/afit_icon.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "lecturerapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
