@@ -17,7 +17,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.elijahhub.Lecturer_App"
     },
     "web": {
       "bundler": "metro",
@@ -45,6 +46,12 @@
         "projectId": "0f0d5533-4250-41e6-bf0d-64ba55aebb79"
       }
     },
-    "owner": "elijahhub"
+    "owner": "elijahhub",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/0f0d5533-4250-41e6-bf0d-64ba55aebb79"
+    }
   }
 }
