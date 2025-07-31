@@ -1,7 +1,6 @@
 {
   "expo": {
     "name": "Afit Attendance Lecturer App",
-    "description": "Afit Attendance Lecturer App is a mobile application designed for lecturers to manage attendance efficiently.",
     "slug": "Lecturer_App",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -43,15 +42,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "f785a2a6-00fa-49ba-ae46-ebc436c029fe"
+        "projectId": "9426f058-85e9-42b3-90a3-7d11c809d881"
       }
     },
-    "owner": "elijahhub",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/f785a2a6-00fa-49ba-ae46-ebc436c029fe"
-    }
+    "owner": "elijahhub"
   }
 }
