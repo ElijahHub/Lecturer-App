@@ -40,7 +40,7 @@ export default function Login() {
           pathname: "/change-password",
           params: { email: data.email },
         });
-      else router.push("/");
+      else router.push("/(tabs)");
     } catch (error) {
       setError("Invalid email or password");
       console.error("Login error:", error);

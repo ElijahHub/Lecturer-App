@@ -8,10 +8,12 @@ import type QRCodeType from "react-native-qrcode-svg";
 import QRCode from "react-native-qrcode-svg";
 import { Button, Text, View, XStack, YStack } from "tamagui";
 
+// Fix: Added correct typing import
 type QRCodeTypes = QRCodeType & {
-  toDataURL: any;
+  toDataURL: (callback: (data: string) => void) => void;
 };
 
+// Fix: Image must be a local asset
 const logo: ImageSourcePropType = require("@/assets/images/logo_nobg.png");
 
 const getFileName = () => {
@@ -24,24 +26,43 @@ const getFileName = () => {
 export default function QRGenerator({ value }: { value: string }) {
   const qrRef = useRef<QRCodeTypes | null>(null);
 
+  // ✅ Debug logging
+  console.log("QR value received:", value);
+
+  // ✅ Prevent crash if value is missing
+  if (!value || value.trim() === "") {
+    return (
+      <YStack gap="$4" alignItems="center" padding="$4">
+        <Text>Please enter a value to generate a QR code.</Text>
+      </YStack>
+    );
+  }
+
   const handleSaveOrShare = async (action: "save" | "share") => {
     const filename = getFileName();
     const fileUri = FileSystem.documentDirectory + filename;
 
     qrRef.current?.toDataURL(async (dataURL: string) => {
-      await FileSystem.writeAsStringAsync(fileUri, dataURL, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+      try {
+        await FileSystem.writeAsStringAsync(fileUri, dataURL, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
 
-      if (action === "save") {
-        const { status } = await MediaLibrary.requestPermissionsAsync();
-        if (status !== "granted") return Alert.alert("Permission denied!");
+        if (action === "save") {
+          const { status } = await MediaLibrary.requestPermissionsAsync();
+          if (status !== "granted") {
+            return Alert.alert("Permission denied!", "Cannot save QR code.");
+          }
 
-        const asset = await MediaLibrary.createAssetAsync(fileUri);
-        await MediaLibrary.createAlbumAsync("QR Codes", asset, false);
-        Alert.alert("QR code saved to gallery.");
-      } else {
-        await Sharing.shareAsync(fileUri);
+          const asset = await MediaLibrary.createAssetAsync(fileUri);
+          await MediaLibrary.createAlbumAsync("QR Codes", asset, false);
+          Alert.alert("Success", "QR code saved to gallery.");
+        } else {
+          await Sharing.shareAsync(fileUri);
+        }
+      } catch (err) {
+        console.error("Error saving or sharing QR code:", err);
+        Alert.alert("Error", "Failed to process QR code.");
       }
     });
   };
@@ -68,11 +89,14 @@ export default function QRGenerator({ value }: { value: string }) {
           color="white"
           theme="light"
           onPress={() => handleSaveOrShare("save")}
-          icon={<Save />}
+          icon={<Save size={20} color="white" />}
         >
           Save to Gallery
         </Button>
-        <Button onPress={() => handleSaveOrShare("share")} icon={<Share />}>
+        <Button
+          onPress={() => handleSaveOrShare("share")}
+          icon={<Share size={20} />}
+        >
           Share
         </Button>
       </XStack>

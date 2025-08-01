@@ -1,4 +1,4 @@
-import { BookOpen, Home, ScanLine, Settings } from "@tamagui/lucide-icons";
+import { BookOpen, Home, QrCode, Settings } from "@tamagui/lucide-icons";
 import { usePathname, useRouter } from "expo-router";
 import { Button, XStack } from "tamagui";
 
@@ -30,9 +30,9 @@ export default function Navbar() {
         icon={<Home color={active("/")} size={24} />}
       ></Button>
       <Button
-        backgroundColor={active("/scan") === "#333" ? "white" : "blue"}
+        backgroundColor={active("/qrcode") === "#333" ? "white" : "blue"}
         onPress={() => router.push("/qrcode")}
-        icon={<ScanLine color={active("/scan")} size={24} />}
+        icon={<QrCode color={active("/qrcode")} size={24} />}
       ></Button>
       <Button
         backgroundColor={active("/attendance") === "#333" ? "white" : "blue"}
@@ -42,7 +42,7 @@ export default function Navbar() {
       <Button
         backgroundColor={active("/settings") === "#333" ? "white" : "blue"}
         onPress={() => router.push("/setting")}
-        icon={<Settings color={active("/setting")} size={24} />}
+        icon={<Settings color={active("/settings")} size={24} />}
       ></Button>
     </XStack>
   );

@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "Afit Attendance Lecturer App",
-    "slug": "Lecturer_App",
+    "slug": "Afit Lecturer App",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo.png",
     "scheme": "lecturerapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,11 +13,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/adaptive-logo.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
-      "package": "com.elijahhub.Lecturer_App"
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro",
@@ -29,7 +28,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/splash-logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
@@ -40,11 +39,7 @@
       "typedRoutes": true
     },
     "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "9426f058-85e9-42b3-90a3-7d11c809d881"
-      }
-    },
-    "owner": "elijahhub"
+      "router": {}
+    }
   }
 }

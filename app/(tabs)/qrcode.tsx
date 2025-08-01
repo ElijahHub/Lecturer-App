@@ -7,7 +7,17 @@ import * as Location from "expo-location";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert } from "react-native";
-import { Button, Form, H4, Label, Select, Spinner, View } from "tamagui";
+import {
+  Button,
+  Form,
+  H4,
+  Label,
+  Select,
+  Spinner,
+  Text,
+  View,
+  YStack,
+} from "tamagui";
 
 export default function QRCodePage() {
   const [qrCodeData, setQrCodeData] = useState<string>("");
@@ -27,12 +37,13 @@ export default function QRCodePage() {
   const { data } = useCourses();
   const { user, token } = useAuth();
 
-  const courseList = data
-    ?.filter((course) => course.lecturersId.includes(user?.id as string))
-    .map((course) => ({
-      id: course.id,
-      code: course.courseCode,
-    }));
+  const courseList =
+    data
+      ?.filter((course) => course.lecturersId.includes(user?.id as string))
+      .map((course) => ({
+        id: course.id,
+        code: course.courseCode,
+      })) || [];
 
   const onSubmit = async (data: { courseId: string }) => {
     if (qrCodeData) return;
@@ -46,6 +57,7 @@ export default function QRCodePage() {
         );
         return;
       }
+
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
       });
@@ -97,11 +109,17 @@ export default function QRCodePage() {
             <Select value={value} onValueChange={onChange}>
               <Select.Trigger width={240} />
               <Select.Content>
-                {courseList?.map((course, i) => (
-                  <Select.Item key={course.id} value={course.code} index={i}>
-                    {course.code}
+                {courseList.length > 0 ? (
+                  courseList.map((course, i) => (
+                    <Select.Item key={course.id} value={course.code} index={i}>
+                      {course.code}
+                    </Select.Item>
+                  ))
+                ) : (
+                  <Select.Item disabled value="none" index={0}>
+                    No course available
                   </Select.Item>
-                ))}
+                )}
               </Select.Content>
             </Select>
           )}
@@ -112,7 +130,7 @@ export default function QRCodePage() {
           backgroundColor={isLoading ? "#9e9eff" : "blue"}
           color="white"
           theme="light"
-          disabled={!isValid || isLoading}
+          disabled={!isValid || isLoading || courseList.length === 0}
           onPress={handleSubmit(onSubmit)}
           icon={isLoading ? <Spinner color="white" /> : undefined}
         >
@@ -120,7 +138,15 @@ export default function QRCodePage() {
         </Button>
       </Form>
 
-      <QRGenerator value={qrCodeData} />
+      <YStack marginTop="$5" alignItems="center">
+        {qrCodeData ? (
+          <QRGenerator value={qrCodeData} />
+        ) : (
+          <Text color="gray" fontSize="$4" textAlign="center">
+            QR code will appear here after generation.
+          </Text>
+        )}
+      </YStack>
     </View>
   );
 }
