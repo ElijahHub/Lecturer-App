@@ -52,24 +52,16 @@ export default function AttendancePage() {
     setIsLoading(true);
     setAttendanceList(undefined);
     try {
+      console.log("Fetching attendance for:", dat.courseId, dat.date);
       const { data } = await useSessionAttendance(
         dat.courseId,
         dat.date,
         token as string
       );
       setAttendanceList(data);
+      console.log(data);
     } catch (error: any) {
-      if (error.response) {
-        setError(
-          `Error: ${
-            error.response.data.message || "Failed to fetch attendance"
-          }`
-        );
-      } else if (error.request) {
-        setError("Network error. Please try again later.");
-      } else {
-        setError("Something went wrong.");
-      }
+      setError("Something went wrong.");
     } finally {
       setIsLoading(false);
     }
@@ -77,8 +69,8 @@ export default function AttendancePage() {
 
   return (
     <View alignItems="center" paddingTop="$5" flex={1}>
-      <H4 fontSize={30} paddingBottom="$5" color="#fff">
-        Generate QRcode
+      <H4 fontSize={30} paddingBottom="$5" color="#000">
+        Get Attendance
       </H4>
 
       <Form gap="$3">
@@ -88,11 +80,13 @@ export default function AttendancePage() {
           name="courseId"
           render={({ field: { onChange, value } }) => (
             <Select value={value} onValueChange={onChange}>
-              <Select.Trigger width={240} />
+              <Select.Trigger width={240}>
+                <Select.Value placeholder="Select a course" />
+              </Select.Trigger>
               <Select.Content>
                 {courseList?.map((course, i) => (
-                  <Select.Item key={course.id} value={course.code} index={i}>
-                    {course.code}
+                  <Select.Item key={course.id} value={course.id} index={i}>
+                    <Select.ItemText>{course.code}</Select.ItemText>
                   </Select.Item>
                 ))}
               </Select.Content>

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Afit Attendance Lecturer App",
-    "slug": "Afit Lecturer App",
+    "slug": "Afit_Lecturer_App",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/adaptive-logo.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.elijahhub.Afit_Lecturer_App"
     },
     "web": {
       "bundler": "metro",
@@ -39,7 +40,11 @@
       "typedRoutes": true
     },
     "extra": {
-      "router": {}
-    }
+      "router": {},
+      "eas": {
+        "projectId": "de62bfa5-249b-4793-b423-99e2a6ee77c0"
+      }
+    },
+    "owner": "elijahhub"
   }
 }

@@ -34,15 +34,15 @@ export function useSessionAttendance(
   return useQuery({
     queryKey: ["sessionAttendance", courseId, date],
     queryFn: async (): Promise<AttendanceData[]> => {
-      const response = await axios.get(`${API_URL}/attendance/record`, {
-        params: {
-          courseId,
-          date,
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        `${API_URL}/attendance/session?courseId=${courseId}&date=${date}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       return response.data.data;
     },
     enabled: !!courseId && !!date,

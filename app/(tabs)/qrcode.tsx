@@ -1,4 +1,4 @@
-import { QRGenerator } from "@/components";
+import { QRGenerator, ScreenWrapper } from "@/components";
 import { API_URL } from "@/config";
 import { useAuth } from "@/context/AuthContext";
 import { useCourses } from "@/hooks";
@@ -79,9 +79,8 @@ export default function QRCodePage() {
           },
         }
       );
-
       if (res.data.success) {
-        setQrCodeData(res.data.data.qrCode);
+        setQrCodeData(res.data.data.qrData);
       }
     } catch (error: any) {
       Alert.alert(
@@ -95,58 +94,62 @@ export default function QRCodePage() {
   };
 
   return (
-    <View alignItems="center" paddingTop="$5" flex={1}>
-      <H4 fontSize={30} paddingBottom="$5" color="#fff">
-        Generate QRcode
-      </H4>
+    <ScreenWrapper>
+      <View alignItems="center" paddingTop="$5" flex={1}>
+        <H4 fontSize={30} paddingBottom="$1" color="#000">
+          Generate QRcode
+        </H4>
 
-      <Form gap="$3">
-        <Label htmlFor="courseId">Choose Course</Label>
-        <Controller
-          control={control}
-          name="courseId"
-          render={({ field: { onChange, value } }) => (
-            <Select value={value} onValueChange={onChange}>
-              <Select.Trigger width={240} />
-              <Select.Content>
-                {courseList.length > 0 ? (
-                  courseList.map((course, i) => (
-                    <Select.Item key={course.id} value={course.code} index={i}>
-                      {course.code}
+        <Form gap="$3">
+          <Label htmlFor="courseId">Choose Course</Label>
+          <Controller
+            control={control}
+            name="courseId"
+            render={({ field: { onChange, value } }) => (
+              <Select value={value} onValueChange={onChange}>
+                <Select.Trigger width={240}>
+                  <Select.Value placeholder="Select a course" />
+                </Select.Trigger>
+                <Select.Content>
+                  {courseList.length > 0 ? (
+                    courseList.map((course, i) => (
+                      <Select.Item key={course.id} value={course.id} index={i}>
+                        <Select.ItemText>{course.code}</Select.ItemText>
+                      </Select.Item>
+                    ))
+                  ) : (
+                    <Select.Item disabled value="none" index={0}>
+                      <Select.ItemText>No course available</Select.ItemText>
                     </Select.Item>
-                  ))
-                ) : (
-                  <Select.Item disabled value="none" index={0}>
-                    No course available
-                  </Select.Item>
-                )}
-              </Select.Content>
-            </Select>
+                  )}
+                </Select.Content>
+              </Select>
+            )}
+          />
+
+          <Button
+            variant="outlined"
+            backgroundColor={isLoading ? "#9e9eff" : "blue"}
+            color="white"
+            theme="light"
+            disabled={!isValid || isLoading || courseList.length === 0}
+            onPress={handleSubmit(onSubmit)}
+            icon={isLoading ? <Spinner color="white" /> : undefined}
+          >
+            {isLoading ? "" : "Generate Code"}
+          </Button>
+        </Form>
+
+        <YStack marginTop="$5" alignItems="center">
+          {qrCodeData ? (
+            <QRGenerator value={qrCodeData} />
+          ) : (
+            <Text color="gray" fontSize="$4" textAlign="center">
+              QR code will appear here after generation.
+            </Text>
           )}
-        />
-
-        <Button
-          variant="outlined"
-          backgroundColor={isLoading ? "#9e9eff" : "blue"}
-          color="white"
-          theme="light"
-          disabled={!isValid || isLoading || courseList.length === 0}
-          onPress={handleSubmit(onSubmit)}
-          icon={isLoading ? <Spinner color="white" /> : undefined}
-        >
-          {isLoading ? "" : "Generate Code"}
-        </Button>
-      </Form>
-
-      <YStack marginTop="$5" alignItems="center">
-        {qrCodeData ? (
-          <QRGenerator value={qrCodeData} />
-        ) : (
-          <Text color="gray" fontSize="$4" textAlign="center">
-            QR code will appear here after generation.
-          </Text>
-        )}
-      </YStack>
-    </View>
+        </YStack>
+      </View>
+    </ScreenWrapper>
   );
 }

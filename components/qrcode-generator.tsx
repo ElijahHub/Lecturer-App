@@ -26,9 +26,6 @@ const getFileName = () => {
 export default function QRGenerator({ value }: { value: string }) {
   const qrRef = useRef<QRCodeTypes | null>(null);
 
-  // ✅ Debug logging
-  console.log("QR value received:", value);
-
   // ✅ Prevent crash if value is missing
   if (!value || value.trim() === "") {
     return (
