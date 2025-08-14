@@ -34,16 +34,25 @@ export function useSessionAttendance(
   return useQuery({
     queryKey: ["sessionAttendance", courseId, date],
     queryFn: async (): Promise<AttendanceData[]> => {
-      const response = await axios.get(
-        `${API_URL}/attendance/session?courseId=${courseId}&date=${date}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      try {
+        const response = await axios.get<{ data: AttendanceData[] }>(
+          `${API_URL}/attendance/session`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            params: {
+              courseId,
+              date,
+            },
+          }
+        );
 
-      return response.data.data;
+        return response.data.data;
+      } catch (err) {
+        console.error("Failed to fetch session attendance:", err);
+        throw err;
+      }
     },
     enabled: !!courseId && !!date,
     refetchOnWindowFocus: false,

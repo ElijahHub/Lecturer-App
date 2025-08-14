@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
 import { useCourses, useSessionAttendance } from "@/hooks";
-import { AttendanceData, sessionFormSchema, SessionFormValues } from "@/types";
+import { sessionFormSchema, SessionFormValues } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
@@ -18,11 +18,13 @@ import {
 } from "tamagui";
 
 export default function AttendancePage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [attendanceList, setAttendanceList] = useState<
-    AttendanceData[] | undefined
-  >(undefined);
-  const [error, setError] = useState("");
+  const { token, user } = useAuth();
+  const { data: coursesData } = useCourses();
+
+  const [selectedCourse, setSelectedCourse] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date("2025-04-30").toISOString().split("T")[0]
+  );
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const {
@@ -33,38 +35,30 @@ export default function AttendancePage() {
     resolver: zodResolver(sessionFormSchema),
     defaultValues: {
       courseId: "",
-      date: new Date("2025-04-30").toISOString().split("T")[0],
+      date: selectedDate,
     },
   });
 
-  const { data } = useCourses();
-
-  const { token, user } = useAuth();
-
-  const courseList = data
+  const courseList = coursesData
     ?.filter((course) => course.lecturersId.includes(user?.id as string))
     .map((course) => ({
       id: course.id,
       code: course.courseCode,
     }));
 
-  const onSubmit = async (dat: SessionFormValues) => {
-    setIsLoading(true);
-    setAttendanceList(undefined);
-    try {
-      console.log("Fetching attendance for:", dat.courseId, dat.date);
-      const { data } = await useSessionAttendance(
-        dat.courseId,
-        dat.date,
-        token as string
-      );
-      setAttendanceList(data);
-      console.log(data);
-    } catch (error: any) {
-      setError("Something went wrong.");
-    } finally {
-      setIsLoading(false);
-    }
+  // React Query hook for fetching attendance
+  const {
+    data: attendanceList,
+    isLoading,
+    refetch,
+    isError,
+    error,
+  } = useSessionAttendance(selectedCourse, selectedDate, token as string);
+
+  const onSubmit = (data: SessionFormValues) => {
+    setSelectedCourse(data.courseId);
+    setSelectedDate(data.date);
+    refetch(); // trigger the query
   };
 
   return (
@@ -94,7 +88,7 @@ export default function AttendancePage() {
           )}
         />
 
-        <Label htmlFor="data">Select Date</Label>
+        <Label htmlFor="date">Select Date</Label>
         <Controller
           control={control}
           name="date"
@@ -109,9 +103,9 @@ export default function AttendancePage() {
                   onChange={(_, selectedDate) => {
                     setShowDatePicker(false);
                     if (selectedDate) {
-                      const newDate = new Date(selectedDate);
-                      newDate.setFullYear(2025);
-                      const formatted = newDate.toISOString().split("T")[0];
+                      const formatted = selectedDate
+                        .toISOString()
+                        .split("T")[0];
                       onChange(formatted);
                     }
                   }}
@@ -134,16 +128,22 @@ export default function AttendancePage() {
         </Button>
       </Form>
 
-      {attendanceList ? (
-        <View>
-          {attendanceList.map((list) => (
-            <ListItemFrame>
-              <ListItemFrame>{list.matNumber}</ListItemFrame>
+      {isError && (
+        <Text>{(error as any)?.message || "Something went wrong"}</Text>
+      )}
+
+      {attendanceList && attendanceList.length > 0 ? (
+        <View marginTop="$5">
+          {attendanceList.map((item) => (
+            <ListItemFrame key={item.matNumber} padding="$2">
+              <Text>
+                {item.name} - {item.matNumber}
+              </Text>
             </ListItemFrame>
           ))}
         </View>
       ) : (
-        <Text>{error}</Text>
+        !isLoading && <Text>No attendance found.</Text>
       )}
     </View>
   );
