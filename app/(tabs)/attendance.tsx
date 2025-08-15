@@ -128,10 +128,6 @@ export default function AttendancePage() {
         </Button>
       </Form>
 
-      {isError && (
-        <Text>{(error as any)?.message || "Something went wrong"}</Text>
-      )}
-
       {attendanceList && attendanceList.length > 0 ? (
         <View marginTop="$5">
           {attendanceList.map((item) => (
